@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mybooks.mapper.MemberMapper">
+
+    <resultMap id="memberMap" type="org.example.mybooks.model.Member">
+        <id property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+
+        <collection property="roleCodes" ofType="java.lang.Integer">
+            <result column="role_code"/>
+        </collection>
+
+    </resultMap>
+
+<sql id="memberColumns">
+    m.id, m.email, m.name,m.password, r.role_code
+</sql>
+
+<select id="findByEmail" resultMap="memberMap">
+    select
+     <include refid="memberColumns"/>
+    from member m
+    left join member_role r on m.id=r.memberId
+    where m.email=#{email}
+        and m.deleted_at is NULL
+</select>
+<select id="findById" resultMap="memberMap">
+    select
+    <include refid="memberColumns"/>
+    from member m
+    left join member_role r on m.id=r.memberId
+    where m.id=#{id}
+</select>
+<select id="findAll" resultMap="memberMap">
+    select
+    <include refid="memberColumns"/>
+    from member m
+    left join member_role r on m.id=r.memberId
+    order by m.id desc
+</select>
+<insert id="insertMember" useGeneratedKeys="true" keyProperty="member.id">
+    insert into member(name,email,password)values(#{member.name},#{member.email},#{member.password})
+</insert>
+<insert id="insertRole">
+    insert into member_role(memberId,role_code)values(#{id},#{code})
+</insert>
+<update id="updatePassword">
+    update member set password=#{password} where id=#{id}
+</update>
+<update id="updateMember">
+    update member set name=#{member.name} where id=#{member.id}
+</update>
+<delete id="deleteRole">
+    delete from member_role where memberId=#{id}
+</delete>
+<insert id="insertRoles" >
+insert into member_role (memberId,role_code)values(#{id},#{roleCode})
+</insert>
+</mapper>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{base-layout::layout(~{::section})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<section class="container">
+    <table class="table table-striped table-hover ">
+        <tr>
+            <th>ID</th>
+            <th>TITLE</th>
+            <th>AUTHOR</th>
+            <th>CREATED</th>
+            <th>FAVORITE</th>
+<!--            <th>THUMBNAIL</th>-->
+        </tr>
+        <tr th:each="book:${bookList}">
+            <td th:text="${book.id}"></td>
+            <td><a th:text="${book.title}" th:href="@{description(id=${book.id})}"></a></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${#dates.format(book.published,'yyyy-MM-dd')}"></td>
+            <td th:text="${book.favorite}"></td>
+<!--            <td>-->
+<!--                <div th:if="${book.image}!=null">-->
+<!--                    <img th:src="@{/files/}+${book.image}" alt="이미지" style="max-width:100px;">-->
+<!--                </div>-->
+<!--            </td>-->
+        </tr>
+    </table>
+    <a  class="btn btn-primary" th:href="@{add}">등록</a>
+</section>
+</body>
+</html>

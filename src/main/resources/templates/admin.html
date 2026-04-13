@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      th:replace="~{base-layout :: layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Member List</title>
+</head>
+<body>
+<section class="container">
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>email</th>
+<!--            <th>password</th>-->
+            <th>role</th>
+            <th>Action</th>
+        </tr>
+        <tr th:each=member:${members}>
+            <td th:text="${member.id}"></td>
+            <td th:text="${member.name}"></td>
+            <td th:text="${member.email}"></td>
+<!--            <td th:text="${member.password}"></td>-->
+            <td th:text="${member.roleNames}"></td>
+            <td><a class="btn btn-warning" th:href="@{/admin/edit(id=${member.id})}">수정</a></td>
+            <td><a class="btn btn-danger" th:href="@{/admin/delete(id=${member.id})}">삭제</a></td>
+        </tr>
+    </table>
+</section>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{base-layout::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section class="container">
+
+<form th:action="@{/admin/edit}" th:object="${member}" method="post">
+<div>
+    <label>Id
+    <input type="hidden" th:field="*{id}"></label>
+</div>
+    <div>
+    <label>Name
+    <input type="text" th:field="*{name}"></label>
+</div>
+    <div>
+    <label>Email
+    <input type="text" th:field="*{email}"></label>
+</div>
+<!--    <div>-->
+<!--    <label>Roles-->
+<!--    <input type="text" th:field="*{roleCodes}"></label>-->
+<!--</div>-->
+    <div>
+
+        <div th:each="role : ${allRoles}">
+
+            <input type="checkbox"
+                   th:id="${role.getCode()}"
+                   th:value="${role.getCode()}"
+                   th:name="roleCodes"
+                   th:checked="${#lists.contains(member.getRoleList(), role.name())}" />
+<!--            /* 2. 전체 권한 중 하나(roleType)가 내 권한 리스트(*{getRoleList()})에 있는지 확인 */-->
+
+
+            <label th:for="${role.getCode()}" th:text="${role.name()}"></label>
+        </div>
+</div>
+<button type="submit" class="btn btn-primary">수정</button>
+    <a th:href="@{/admin}" class="btn btn-primary">취소</a>
+</form>
+<!--    <a th:href="@{list}" type="button" class="btn btn-primary">목록</a>-->
+<!--    <a th:href="@{update(id=${book.id})}" type="button" class="btn btn-warning">수정</a>-->
+<!--    <a th:href="@{delete(id=${book.id})}" type="button" class="btn btn-danger">삭제</a>-->
+</section>
+</body>
+</html>

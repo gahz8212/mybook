@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="https://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
+      th:replace="~{base-layout::layout(~{::section})}">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head><body>
+<section class="container">
+    안녕하세요
+    <div>
+
+
+<a th:href="@{/login}">로그인</a>
+<a th:href="@{/join}">회원가입</a>
+
+    </div></section> </body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{base-layout::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section class="container">
+
+<table class="table" style="width:400px;">
+    <tr>
+        <td colspan="2" >
+            <div th:if="${book.image!=null}">
+                <img th:src="@{/files/}+${book.image}" alt="첨부 이미지" style="max-width:300px;">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th style="width:20%">ID</th>
+        <td th:text="${book.id}"></td>
+    </tr>
+    <tr>
+        <th style="width:20%">TITLE</th>
+        <td th:text="${book.title}"></td>
+    </tr><tr>
+        <th style="width:20%">DESCRIPTION</th>
+        <td th:text="${book.description}"></td>
+    </tr><tr>
+        <th style="width:20%">AUTHOR</th>
+        <td th:text="${book.author}"></td>
+    </tr>
+</table>
+    <a th:href="@{list}" type="button" class="btn btn-primary">목록</a>
+    <a th:href="@{update(id=${book.id})}" type="button" class="btn btn-warning">수정</a>
+    <a th:href="@{delete(id=${book.id})}" type="button" class="btn btn-danger">삭제</a>
+</section>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      th:replace="~{base-layout :: layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<section class="container">
+    <form th:action="@{/add}" th:object="${form}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <input type="text" name="title">
+        </div>
+        <div class="mb-3">
+        <textarea  name="description" rows="10" cols="20"></textarea>
+    </div>
+        <div class="mb-3">
+            <input  type="text" name="author">
+        </div>
+        <div class="mb-3">
+            <label for="uploadFile">이미지 첨부</label>
+            <input type="file" name="uploadFile" id="uploadFile" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">저장</button>
+        <button type="reset" class="btn btn-warning">초기화</button>
+        <a type="button" th:href="@{list}" class="btn btn-danger">취소</a>
+    </form>
+</section>
+</body>
+</html>
