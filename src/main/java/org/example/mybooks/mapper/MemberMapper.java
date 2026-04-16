@@ -14,11 +14,9 @@ public interface MemberMapper {
 
     Optional<Member> findById(@Param("id") Long id);
 
-
-
     void insertMember(@Param("member")Member member);
 
-    void insertRoles(@Param("id") Long id, @Param("code") int code);
+//    void insertRoles(@Param("id") Long id, @Param("code") int code);
 
     List<MemberDto> findAll();
 
@@ -26,4 +24,5 @@ public interface MemberMapper {
 
     void insertRoles(@Param("id")Long id,@Param("roleCode")Integer roleCode);
     void deleteRole(@Param("id")Long id);
+    String findNameByEmail(@Param("email") String email);
 }

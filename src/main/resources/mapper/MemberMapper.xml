@@ -33,6 +33,11 @@
     left join member_role r on m.id=r.memberId
     where m.id=#{id}
 </select>
+
+    <select id="findNameByEmail" resultType="String">
+        select name from member where email=#{email}
+    </select>
+
 <select id="findAll" resultMap="memberMap">
     select
     <include refid="memberColumns"/>
@@ -43,9 +48,9 @@
 <insert id="insertMember" useGeneratedKeys="true" keyProperty="member.id">
     insert into member(name,email,password)values(#{member.name},#{member.email},#{member.password})
 </insert>
-<insert id="insertRole">
-    insert into member_role(memberId,role_code)values(#{id},#{code})
-</insert>
+<!--<insert id="insertRole">-->
+<!--    insert into member_role(memberId,role_code)values(#{id},#{roleCode})-->
+<!--</insert>-->
 <update id="updatePassword">
     update member set password=#{password} where id=#{id}
 </update>

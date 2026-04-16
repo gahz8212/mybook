@@ -26,7 +26,9 @@ public class MemberService {
                 .email(dto.getEmail())
                 .name(dto.getName())
                 .password(encodePw).build();
+        log.info("member:{},member.getId():{},getCode:{}",member,member.getId(), RoleType.USER.getCode());
         memberMapper.insertMember(member);
+        log.info("DB 삽입 후 member.getId(): {}", member.getId());
         memberMapper.insertRoles(member.getId(), RoleType.USER.getCode());
     }
     public boolean checkPassword(Long id,String password){
@@ -58,5 +60,8 @@ public class MemberService {
         for(Integer roleCode:member.getRoleCodes()){
             memberMapper.insertRoles(member.getId(),roleCode);
         }
+    }
+    public String findNameByEmail(String email){
+        return memberMapper.findNameByEmail(email);
     }
 }

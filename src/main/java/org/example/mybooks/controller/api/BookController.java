@@ -1,31 +1,25 @@
-package org.example.mybooks.controller;
+package org.example.mybooks.controller.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.mybooks.dto.BookDto;
-import org.example.mybooks.model.Book;
 import org.example.mybooks.service.BookService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/api")
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
+//    @GetMapping("/")
+//    public String index() {
+//        return "index";
+//    }
 
     @GetMapping("/list")
     public ResponseEntity<List<BookDto>> findAll(){
