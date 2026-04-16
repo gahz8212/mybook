@@ -25,43 +25,58 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        log.info("====== 필터 진입 성공 ======"); // 1. 이게 찍히는지 확인
-        String token = resolveToken(httpRequest);
-        log.info("추출된 토큰: {}", token); // 이게 null이면 프론트엔드 헤더 설정 문제!
+       try {
+           HttpServletRequest httpRequest = (HttpServletRequest) request;
+           HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        try {
-            // 1. 토큰이 있고 유효한지 검사
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                log.info("검증 로직 시작"); // 3. 여기까지 오는지 확인
-                // 블랙리스트(로그아웃) 체크
-                String isLogout = redisTemplate.opsForValue().get("blacklist:" + token);
+           String path = httpRequest.getRequestURI();
+           log.info("📢 요청 들어옴!! URI: {}, Method: {}", path, httpRequest.getMethod());
 
-                if (ObjectUtils.isEmpty(isLogout)) {
-                    Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            }
-        } catch (ExpiredJwtException e) {
-            // ⭐ 핵심: 토큰 만료 시 401 에러 응답을 직접 작성합니다.
-            // 이 메시지가 나가야 프론트엔드 Axios 인터셉터의 catch(error)로 들어갑니다.
-            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpResponse.setContentType("application/json;charset=UTF-8");
-            httpResponse.getWriter().write("{\"code\":\"401\", \"message\":\"ACCESS_TOKEN_EXPIRED\"}");
-            return; // 필터 체인을 더 이상 진행하지 않고 여기서 응답을 종료합니다.
-        } catch (Exception e) {
-            // 그 외 토큰 관련 에러 처리 (선택사항)
-            log.error("JWT 검증 중 오류 발생: {}", e.getMessage());
-        }
+           // 1. 로그인/회원가입 경로는 토큰 검증 없이 바로 통과 (가장 안전한 방법)
+           if (path.startsWith("/api/login") || path.startsWith("/api/join")|| path.contains("reissue")) {
+               log.info("✅ 검증 없이 통과하는 경로: {}", path);
+               chain.doFilter(request, response);
+               return;
+           }
 
-        chain.doFilter(request, response);
+           String token = resolveToken(httpRequest);
+           log.info("추출된 토큰: {}", token);
+
+           try {
+               // 2. 토큰이 있는 경우에만 검증 진행
+               if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+
+//                    Redis 블랙리스트 체크 (토큰이 확실히 있을 때만 수행)
+                   String isLogout = redisTemplate.opsForValue().get("blacklist:" + token);
+
+                   if (!StringUtils.hasText(isLogout)) {
+                       Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                       SecurityContextHolder.getContext().setAuthentication(authentication);
+                       log.info("SecurityContext에 인증 정보 저장 완료");
+                   }
+               }
+           } catch (ExpiredJwtException e) {
+               log.warn("토큰 만료: {}", e.getMessage());
+               httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+               httpResponse.setContentType("application/json;charset=UTF-8");
+               httpResponse.getWriter().write("{\"code\":\"401\", \"message\":\"ACCESS_TOKEN_EXPIRED\"}");
+               return;
+           } catch (Exception e) {
+               log.error("JWT 필터 내 에러 발생: ", e);
+               // 에러가 나더라도 다음 필터로 넘겨주거나 적절한 응답을 줘야 /error로 안 빠집니다.
+           }
+
+           chain.doFilter(request, response);
+       }catch(Exception e){
+           log.error("e:",e);
+           throw e;
+       }
     }
 
     private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
+        String bearerToken = request.getHeader("Authorization"); // 👈 오타 주의 (Authorizaiton 등)
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 이후의 값만 추출
         }
         return null;
     }

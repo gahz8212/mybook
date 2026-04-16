@@ -7,6 +7,7 @@ import org.example.mybooks.security.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,34 +29,25 @@ public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
 
 
-        http.httpBasic(httpBasic -> httpBasic.disable())
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/join", "/login","/api/login","/api/reissue").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/image/**", "/files/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate),
-                        UsernamePasswordAuthenticationFilter.class);
-//                .formLogin(login -> login
-//                        .defaultSuccessUrl("/list",true)
-//                        .loginPage("/login")
-//                        .usernameParameter("email")
-//                        .failureHandler((request, response, exception) -> {
-//                            System.out.println("로그인 실패 사유: " + exception.getMessage());
-//                            response.sendRedirect("/login?error");
-//                        })
-//                        .permitAll())
-//                .logout(logout -> logout.logoutSuccessUrl("/").logoutUrl("/")
-//                        .invalidateHttpSession(true));
-        return http.build();
-    }
+
+
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+            http.httpBasic(httpBasic -> httpBasic.disable())
+                    .csrf(csrf -> csrf.disable())
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                    .authorizeHttpRequests(authorize -> authorize
+                            .requestMatchers("/", "/join", "/login","/api/login","/api/reissue","/error").permitAll()
+                            .requestMatchers("/css/**", "/js/**", "/image/**", "/files/**", "/favicon.ico").permitAll()
+                            .requestMatchers("/admin/**").hasRole("ADMIN")
+                            .anyRequest().authenticated())
+                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate),
+                            UsernamePasswordAuthenticationFilter.class);
+            return http.build();
+        }
 
 //    @Bean
 //    public WebSecurityCustomizer webSecurityCustomizer() {
