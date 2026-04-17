@@ -3,6 +3,7 @@ package org.example.mybooks.controller.api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.mybooks.dto.BookDto;
+import org.example.mybooks.model.Book;
 import org.example.mybooks.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +17,12 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
 
-//    @GetMapping("/")
-//    public String index() {
-//        return "index";
-//    }
+    @GetMapping("/book/{id}")
+    public ResponseEntity<Book> index(@PathVariable ("id") Long id) {
+        log.info("id:{}",id.toString());
+        Book book=bookService.findById(id);
+        return ResponseEntity.ok(book);
+    }
 
     @GetMapping("/list")
     public ResponseEntity<List<BookDto>> findAll(){
@@ -53,7 +56,8 @@ public class BookController {
 //        try {
 //        MultipartFile file=bookDto.getUploadFile();
 //        if(!file.isEmpty()) {
-//            String projectPath = "/home/ksh/upload/book/";
+//            String projectPath = "/home/ksh/upload/book/";//(Linux)
+//            String projectPath = "C:/Users/Public/Pictures/Books/";//(Window)
 //            UUID uuid = UUID.randomUUID();
 //            String filename = uuid + "_" + file.getOriginalFilename();
 //            File saveFile = new File(projectPath + filename);
