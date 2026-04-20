@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.mybooks.dto.BookDto;
 import org.example.mybooks.mapper.BookMapper;
 import org.example.mybooks.model.Book;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +26,8 @@ public class BookService {
         return bookMapper.findById(id);
     }
 
-    public int update(Book book) {
-        return bookMapper.update(book);
+    public int update(Long id,BookDto book) {
+        return bookMapper.update(id,book);
     }
 
     public int delete(Long id) {

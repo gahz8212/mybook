@@ -17,7 +17,7 @@
         title=#{book.title},
         description=#{book.description},
         author=#{book.author}
-        where id=#{book.id}
+        where id=#{id}
     </update>
     <delete id="delete">
         delete from book where id=#{id}

@@ -15,8 +15,7 @@ public interface BookMapper {
 
     int create(@Param("book") BookDto bookdto);
     Book findById(@Param("id") Long id);
-    int update(@Param("book") Book book);
+    int update(@Param("id")Long id, @Param("book") BookDto book);
     int delete(@Param("id") Long id);
-
     void updateFav(@Param("id")Long id);
 }
