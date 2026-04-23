@@ -3,8 +3,10 @@ package org.example.mybooks.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.mybooks.constant.RoleType;
+import org.example.mybooks.dto.AuthorityDto;
 import org.example.mybooks.dto.JoinDto;
 import org.example.mybooks.dto.MemberDto;
+import org.example.mybooks.exception.AdminConstraintException;
 import org.example.mybooks.mapper.MemberMapper;
 import org.example.mybooks.model.Member;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,10 +28,10 @@ public class MemberService {
                 .email(dto.getEmail())
                 .name(dto.getName())
                 .password(encodePw).build();
-        log.info("member:{},member.getId():{},getCode:{}",member,member.getId(), RoleType.USER.getCode());
+        log.info("member:{},member.getId():{},getCode:{}",member,member.getId(), List.of(RoleType.USER.name()));
         memberMapper.insertMember(member);
         log.info("DB 삽입 후 member.getId(): {}", member.getId());
-        memberMapper.insertRoles(member.getId(), RoleType.USER.getCode());
+//        memberMapper.insertMemberRoles(member.getId(), RoleType.USER.getCode());
     }
     public boolean checkPassword(Long id,String password){
         Member member=memberMapper.findById(id).orElseThrow();
@@ -45,20 +47,20 @@ public class MemberService {
         return memberMapper.findAll();
     }
 
-    public Member findByEmail(String email) {
 
-        return memberMapper.findByEmail(email).orElseThrow();
-    }
-    public MemberDto findById(Long id){
-        Member member=memberMapper.findById(id).orElseThrow();
-            return MemberDto.from(member);
+    public void updateMemberRole(AuthorityDto authorityDto) {
+        boolean currentlyIsAdmin=memberMapper.checkIsAdmin(authorityDto.getId());
 
-    }
+        if(currentlyIsAdmin && !authorityDto.getRoleArray().contains("ADMIN")){
+            int totalAdminCount=memberMapper.countAdmins();
+            if(totalAdminCount<=1){
+                throw new AdminConstraintException("최소한 한 명의 관리자가 존재해야 함으로 권한을 해제할 수 없습니다.");
+            }
+        }
+        memberMapper.deleteRole(authorityDto.getId());
 
-    public void updateMember(MemberDto member) {
-        memberMapper.deleteRole(member.getId());
-        for(Integer roleCode:member.getRoleCodes()){
-            memberMapper.insertRoles(member.getId(),roleCode);
+        if(authorityDto.getRoleArray()!=null && !authorityDto.getRoleArray().isEmpty()){
+            memberMapper.insertMemberRoles(authorityDto.getId(),authorityDto.getRoleArray());
         }
     }
     public String findNameByEmail(String email){

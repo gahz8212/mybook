@@ -8,7 +8,7 @@
         <result property="name" column="name"/>
         <result property="password" column="password"/>
 
-        <collection property="roleCodes" ofType="java.lang.Integer">
+        <collection property="roleNames" ofType="java.lang.String">
             <result column="role_code"/>
         </collection>
 
@@ -60,7 +60,17 @@
 <delete id="deleteRole">
     delete from member_role where memberId=#{id}
 </delete>
-<insert id="insertRoles" >
-insert into member_role (memberId,role_code)values(#{id},#{roleCode})
+<insert id="insertMemberRoles">
+    INSERT INTO member_role (memberId, role_code)
+    VALUES
+    <foreach collection="roleNames" item="name" separator=",">
+        (#{id}, #{name})
+    </foreach>
 </insert>
+    <select id="checkIsAdmin" resultType="boolean">
+        select count(*)>0 from member_role where memberId=#{id} and role_code='ADMIN'
+    </select>
+    <select id="countAdmins" resultType="int">
+        select count(*) from member_role where role_code='ADMIN'
+    </select>
 </mapper>

@@ -32,8 +32,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         ////
-        List<GrantedAuthority> authorities =member.getRoleCodes().stream()
-                .map(code->new SimpleGrantedAuthority("ROLE_"+ RoleType.fromCode(code).name()))
+        List<GrantedAuthority> authorities =member.getRoleNames().stream()
+                .map(name->new SimpleGrantedAuthority("ROLE_"+ RoleType.fromCode(name).name()))
                 .collect(Collectors.toList());
         ////
 //        return new CustomUserDetails(member);

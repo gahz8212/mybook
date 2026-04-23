@@ -3,7 +3,7 @@
 <mapper namespace="org.example.mybooks.mapper.BookMapper">
 
     <select id="findAll"  resultType="org.example.mybooks.dto.BookDto">
-        select * from book
+        select * from book order by id desc
     </select>
     
     <insert id="create">

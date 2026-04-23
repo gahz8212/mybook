@@ -1,5 +1,7 @@
 package org.example.mybooks.controller.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -27,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
+@Tag(name="User API",description = "사용자 인증 관리 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -39,6 +41,7 @@ public class AuthController {
     private final AuthService authService;
     private final MemberService memberService;
 
+    @Operation(summary="회원가입",description = "새로운 회원 등록")
     @PostMapping("/join")
     public ResponseEntity<String> join(@Valid @RequestBody JoinDto join,
                                        BindingResult bindingResult){
@@ -58,7 +61,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @Operation(summary="회원인증",description = "회원 인증")
     @PostMapping("/login") // 프론트엔드 axios.post('/api/login', ...)과 정확히 일치
     public ResponseEntity<TokenDto> login(@RequestBody LoginRequestDto loginRequest, HttpServletResponse response) {
         log.info("📢 [성공] 컨트롤러 진입! 이메일: {}", loginRequest.getEmail());
@@ -68,7 +71,7 @@ public class AuthController {
         // 일단은 성공 응답만 보내서 통신 확인
         return ResponseEntity.ok(token);
     }
-
+    @Operation(summary = "로그 아웃",description = "회원이 로그아웃을 합니다.")
     @PostMapping("/logout")
     public void logout(HttpServletResponse response){
         authService.logout(response);
@@ -84,6 +87,7 @@ public class AuthController {
         String email = principal.getName(); // 여기서 getName()은 무조건 작동합니다.
         return ResponseEntity.ok("인증 성공! 이메일: " + email);
     }
+    @Operation(summary = "토큰을 재 발행",description = "401에러 발생시 토큰을 재 발행 합니다.")
     @PostMapping("/reissue") // 반드시 Post이어야 합니다.
     public ResponseEntity<TokenDto> reissue(HttpServletRequest request,
                                             @CookieValue(name="refreshToken") String refreshToken,
