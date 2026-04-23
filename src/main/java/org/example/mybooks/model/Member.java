@@ -19,15 +19,14 @@ public class Member {
     private String name;
     private String email;
     private String password;
-    private List<Integer> roleCodes;
-    private String roleNames;
+    private List<String> roleNames;
     private Date deleted_at;
 
-    public String getRoleNames(){
-        if(this.roleCodes==null||this.roleCodes.isEmpty()){
-            return "권한없음";
-        }
-        return this.roleCodes.stream().map(code-> RoleType.fromCode(code).name())
-                .collect(Collectors.joining(", "));
-    }
+//    public String getRoleNames(){
+//        if(this.roleCodes==null||this.roleCodes.isEmpty()){
+//            return "권한없음";
+//        }
+//        return this.roleCodes.stream().map(code-> RoleType.fromCode(code).name())
+//                .collect(Collectors.joining(", "));
+//    }
 }

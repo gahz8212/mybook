@@ -22,7 +22,11 @@ public interface MemberMapper {
 
     void updatePassword(@Param("id")Long id,@Param("password") String password);
 
-    void insertRoles(@Param("id")Long id,@Param("roleCode")Integer roleCode);
+    void insertMemberRoles(@Param("id")Long id,@Param("roleNames")List<String> roleNames);
+
     void deleteRole(@Param("id")Long id);
     String findNameByEmail(@Param("email") String email);
+
+    boolean checkIsAdmin(@Param("id")Long id);
+    int countAdmins();
 }

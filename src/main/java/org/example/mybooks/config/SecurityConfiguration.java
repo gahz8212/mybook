@@ -40,9 +40,15 @@ public class SecurityConfiguration {
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                     .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers("/", "/join", "/login","/api/login","/api/reissue","/error").permitAll()
+                            .requestMatchers("/", "/join", "/login","/api/login","/api/join","/api/reissue","/error").permitAll()
                             .requestMatchers("/css/**", "/js/**", "/image/**", "/files/**", "/favicon.ico").permitAll()
-                            .requestMatchers("/admin/**").hasRole("ADMIN")
+                            .requestMatchers("/api/admin/roles/**").permitAll()
+                            .requestMatchers(
+                                    "/swagger-ui/**",
+                                    "/swagger-ui.html",
+                                    "/v3/api-docs/**",
+                                    "/api-docs/**"
+                            ).permitAll()
                             .anyRequest().authenticated())
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate),
                             UsernamePasswordAuthenticationFilter.class);
@@ -72,7 +78,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

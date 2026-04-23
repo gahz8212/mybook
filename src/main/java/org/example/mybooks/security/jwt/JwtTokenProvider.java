@@ -31,6 +31,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -58,10 +59,11 @@ public class JwtTokenProvider {
 
     public TokenDto generateToken(Authentication authentication, String userName) {
         String email = authentication.getName();
-        String roles = authentication.getAuthorities().stream()
+        List<String> roles = authentication.getAuthorities()
+                .stream()
                 .map(GrantedAuthority::getAuthority)
                 .filter(role -> role.startsWith("ROLE_"))
-                .collect(Collectors.joining(","));
+                .collect(Collectors.toList());
         String accessToken = createToken(email, roles);
         log.info("role:{}",roles);
 
@@ -74,7 +76,8 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    public String createToken(String email,String role){
+    public String createToken(String email,List<String> role){
+        log.info("role:{}",role);
         Claims claims=Jwts.claims().setSubject(email);
         claims.put("role",role);
         Date now=new Date();

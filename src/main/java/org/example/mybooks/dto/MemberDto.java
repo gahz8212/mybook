@@ -19,22 +19,22 @@ public class MemberDto {
     private Long id;
     private String name;
     private String email;
-    private List<Integer> roleCodes;
-    private String roleNames;
+    private List<String> roleNames;
+//    private List<Integer> roleCodes;
 
     public static MemberDto from(Member member){
         return MemberDto.builder()
                 .id(member.getId())
                 .name(member.getName())
                 .email(member.getEmail())
-                .roleCodes(member.getRoleCodes())
+//                .roleCodes(member.getRoleCodes())
                 .roleNames(member.getRoleNames())
                 .build();
     }
-    public List<String> getRoleList(){
-        if(this.roleNames==null||this.roleNames.isEmpty()){
-            return Collections.emptyList();
-        }
-        return Arrays.asList(this.roleNames.split(", "));
-    }
+//    public String getRoleList(){
+//        if(this.roleNames==null||this.roleNames.isEmpty()){
+//            return "";
+//        }
+//        return (this.roleNames.split(", "));
+//    }
 }

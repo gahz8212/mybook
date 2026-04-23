@@ -4,8 +4,8 @@ package org.example.mybooks.constant;
 import lombok.Getter;
 
 public enum RoleType {
-    USER(0,"ROLE_USER"),
-    ADMIN(1,"ROLE_ADMIN");
+    USER(0,"USER"),
+    ADMIN(1,"ADMIN");
     @Getter
     private final int code;
     @Getter
@@ -14,11 +14,13 @@ public enum RoleType {
         this.code=code;
         this.roleName=roleName;
     }
-    public static RoleType fromCode(int code){
+    public static RoleType fromCode(String name){
         for(RoleType role:RoleType.values()){
-            if(role.code==code)return role;
+            if (role.roleName.equalsIgnoreCase(name.trim())) {
+                return role;
+            }
         }
+        System.out.println("⚠️ 매칭 실패! DB에서 온 값: [" + name + "] -> USER로 강제 변환됨");
         return USER;
     }
-
 }
