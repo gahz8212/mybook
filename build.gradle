@@ -10,7 +10,7 @@ description = 'mybooks'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    // 1. Web & Template Engine
+    // 1. Web & Template Enginesk 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
